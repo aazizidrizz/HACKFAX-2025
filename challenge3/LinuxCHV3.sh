@@ -18,6 +18,3 @@ rm flag.txt layer1.zip layer2.zip
 
 # Set appropriate permissions for the files
 chmod 644 layer3.zip 
-
-# Set permissions for all files in the directory
-chmod 644 README.txt 
