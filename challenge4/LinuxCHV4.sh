@@ -1,22 +1,26 @@
 #!/bin/bash
 
-# Create challenge directory if it doesn't exist
+# Challenge: Capture the flag from intercepted network traffic.
+
+# Create challenge directory
 mkdir -p /tmp/ctf_challenge/level4
 cd /tmp/ctf_challenge/level4
 
-# Start tcpdump to capture only packets on port 8080 and save to pcap file
-# No need for sudo if tcpdump has the appropriate capabilities
-tcpdump -i lo -w captured_traffic.pcap port 8080 &
+# Start tcpdump in the background and capture packets (requires sudo)
+sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
 
-# Allow tcpdump to start properly and begin capturing
-sleep 2
+# Allow tcpdump to start properly
+sleep 3
 
 # Simulate network transmission of the flag using Netcat
-# Send the flag to port 8080 and stop after 1 second (-q 1)
-echo "CTF{Wakanda_Forever}" | nc -l -p 8080 -q 1
+# Start Netcat in listener mode in the background
+nc -l -p 8080 > /dev/null &
 
-# Allow time for the flag to be transmitted before stopping capture
-sleep 2
+# Send the flag to localhost port 8080 to trigger network traffic
+echo "CTF{Wakanda_Forever}" | nc -l -p 8080 -q 1 &
 
-# Stop tcpdump to complete the capture and save the pcap file
-pkill tcpdump
+# Allow time for tcpdump to capture the transmission
+sleep 3
+
+# Stop the tcpdump capture
+sudo pkill tcpdump
