@@ -33,7 +33,7 @@ if ! ps -p $TCPDUMP_PID > /dev/null; then
 fi
 
 # Allow tcpdump to initialize properly
-sleep 3
+sleep 2
 
 # Simulate network transmission of the flag using Netcat
 echo "Setting up Netcat listener and sender..."
@@ -43,14 +43,14 @@ nc -l -p 8080 > /dev/null &
 NC_LISTENER_PID=$!
 
 # Allow Netcat listener to start
-sleep 2
+sleep 1
 
 # Send the flag to localhost port 8080 using Netcat as a client
-# Use -w 1 for OpenBSD Netcat instead of -q 1
+# Use -w 1 for OpenBSD Netcat to limit timeout
 echo "CTF{Wakanda_Forever}" | nc localhost 8080 -w 1
 
 # Allow time for tcpdump to capture the transmission
-sleep 3
+sleep 2
 
 # Stop tcpdump
 echo "Stopping tcpdump..."
