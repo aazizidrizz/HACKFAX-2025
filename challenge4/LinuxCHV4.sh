@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# Challenge: Capture the flag from intercepted network traffic.
-echo "Setting up CTF challenge..."
-
 # Create challenge directory
 mkdir -p /tmp/ctf_challenge/level4
-cd /tmp/ctf_challenge/level4 || { echo "Failed to create or access directory"; exit 1; }
+cd /tmp/ctf_challenge/level4
 
 # Start tcpdump in the background to capture packets on port 8080
 sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
