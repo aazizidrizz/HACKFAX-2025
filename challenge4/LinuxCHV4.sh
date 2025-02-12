@@ -1,12 +1,36 @@
 #!/bin/bash
 
 # Create challenge directory
-mkdir -p /tmp/ctf_challenge/level4
-cd /tmp/ctf_challenge/level4
+mkdir -p /tmp/ctf_challenge/level4 || { echo "Failed to create directory"; exit 1; }
+cd /tmp/ctf_challenge/level4 || { echo "Failed to access directory"; exit 1; }
+
+# Check if tcpdump and nc are installed
+if ! command -v tcpdump > /dev/null; then
+    echo "tcpdump is not installed. Please install it first."
+    exit 1
+fi
+
+if ! command -v nc > /dev/null; then
+    echo "Netcat (nc) is not installed. Please install it first."
+    exit 1
+fi
+
+# Check if port 8080 is available
+if netstat -tuln | grep ':8080' > /dev/null; then
+    echo "Port 8080 is already in use"
+    exit 1
+fi
 
 # Start tcpdump in the background to capture packets on port 8080
-sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
+echo "Starting tcpdump..."
+tcpdump -i lo -w captured_traffic.pcap port 8080 &
 TCPDUMP_PID=$!
+
+# Verify tcpdump started successfully
+if ! ps -p $TCPDUMP_PID > /dev/null; then
+    echo "Failed to start tcpdump"
+    exit 1
+fi
 
 # Allow tcpdump to initialize properly
 sleep 2
@@ -22,13 +46,15 @@ NC_LISTENER_PID=$!
 sleep 1
 
 # Send the flag to localhost port 8080 using Netcat as a client
-echo "CTF{Wakanda_Forever}" | nc localhost 8080 -q 1
+# Use -w 1 for OpenBSD Netcat instead of -q 1
+echo "CTF{Wakanda_Forever}" | nc localhost 8080 -w 1
 
 # Allow time for tcpdump to capture the transmission
 sleep 2
 
 # Stop tcpdump
-sudo pkill -P $TCPDUMP_PID
+echo "Stopping tcpdump..."
+pkill -P $TCPDUMP_PID 2>/dev/null
 
 # Kill the Netcat listener
 kill $NC_LISTENER_PID 2>/dev/null
