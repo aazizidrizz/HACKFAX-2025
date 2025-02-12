@@ -21,9 +21,9 @@ if netstat -tuln | grep ':8080' > /dev/null; then
     exit 1
 fi
 
-# Start tcpdump in the background to capture packets on port 8080
+# Start tcpdump in the background to capture UDP packets on port 8080
 echo "Starting tcpdump..."
-sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
+sudo tcpdump -i lo -w captured_traffic.pcap udp port 8080 &
 TCPDUMP_PID=$!
 
 # Verify tcpdump started successfully
@@ -35,19 +35,18 @@ fi
 # Allow tcpdump to initialize properly
 sleep 2
 
-# Simulate network transmission of the flag using Netcat
+# Simulate network transmission of the flag using Netcat (UDP mode)
 echo "Setting up Netcat listener and sender..."
 
-# Start Netcat listener in the background to receive the flag
-nc -l -p 8080 > /dev/null &
+# Start Netcat listener in the background to receive the flag (UDP mode)
+nc -l -u -p 8080 > /dev/null &
 NC_LISTENER_PID=$!
 
 # Allow Netcat listener to start
 sleep 1
 
-# Send the flag to localhost port 8080 using Netcat as a client
-# Use -w 1 for OpenBSD Netcat to limit timeout
-echo "CTF{Wakanda_Forever}" | nc localhost 8080 -w 1
+# Send the flag to localhost port 8080 using Netcat as a client (UDP mode)
+echo "CTF{Wakanda_Forever}" | nc -u localhost 8080
 
 # Allow time for tcpdump to capture the transmission
 sleep 2
@@ -58,3 +57,5 @@ sudo pkill -P $TCPDUMP_PID 2>/dev/null
 
 # Kill the Netcat listener
 kill $NC_LISTENER_PID 2>/dev/null
+
+echo "Challenge setup complete."
