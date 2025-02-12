@@ -6,21 +6,17 @@
 mkdir -p /tmp/ctf_challenge/level4
 cd /tmp/ctf_challenge/level4
 
-# Start tcpdump in the background and capture packets (requires sudo)
-sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
+# Start tcpdump in the background and capture packets
+tcpdump -i lo -w captured_traffic.pcap port 8080 &
 
 # Allow tcpdump to start properly
 sleep 3
 
-# Simulate network transmission of the flag using Netcat
-# Start Netcat in listener mode in the background
-nc -l -p 8080 > /dev/null &
+# Simulate network transmission of the flag using Netcat (send only once)
+echo "CTF{Wakanda_Forever}" | nc -l -p 8080 -q 1 &
 
-# Send the flag to localhost port 8080 to trigger network traffic
-echo "CTF{Wakanda_Forever}" | nc localhost 8080
-
-# Allow time for tcpdump to capture the transmission
+# Allow time for transmission (use -q 1 to make sure netcat finishes transmission)
 sleep 3
 
 # Stop the tcpdump capture
-sudo pkill tcpdump
+pkill tcpdump
