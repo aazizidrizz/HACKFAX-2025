@@ -23,7 +23,7 @@ fi
 
 # Start tcpdump in the background to capture packets on port 8080
 echo "Starting tcpdump..."
-tcpdump -i lo -w captured_traffic.pcap port 8080 &
+sudo tcpdump -i lo -w captured_traffic.pcap port 8080 &
 TCPDUMP_PID=$!
 
 # Verify tcpdump started successfully
@@ -33,7 +33,7 @@ if ! ps -p $TCPDUMP_PID > /dev/null; then
 fi
 
 # Allow tcpdump to initialize properly
-sleep 2
+sleep 3
 
 # Simulate network transmission of the flag using Netcat
 echo "Setting up Netcat listener and sender..."
@@ -43,18 +43,18 @@ nc -l -p 8080 > /dev/null &
 NC_LISTENER_PID=$!
 
 # Allow Netcat listener to start
-sleep 1
+sleep 2
 
 # Send the flag to localhost port 8080 using Netcat as a client
 # Use -w 1 for OpenBSD Netcat instead of -q 1
 echo "CTF{Wakanda_Forever}" | nc localhost 8080 -w 1
 
 # Allow time for tcpdump to capture the transmission
-sleep 2
+sleep 3
 
 # Stop tcpdump
 echo "Stopping tcpdump..."
-pkill -P $TCPDUMP_PID 2>/dev/null
+sudo pkill -P $TCPDUMP_PID 2>/dev/null
 
 # Kill the Netcat listener
 kill $NC_LISTENER_PID 2>/dev/null
