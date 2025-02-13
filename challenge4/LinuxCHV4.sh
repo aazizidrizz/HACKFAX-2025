@@ -33,12 +33,20 @@ if ! ps -p $TCPDUMP_PID > /dev/null; then
 fi
 
 # Allow tcpdump to initialize properly
-sleep 2
+sleep 3
 
 # Simulate fake traffic on other ports
 echo "Generating fake traffic..."
 for i in {1..5}; do
-    # Send random data to random ports using Netcat
+    # Start listeners for fake traffic
+    nc -l -p $((9000 + i)) > /dev/null &
+done
+
+# Allow listeners to start
+sleep 2
+
+# Send fake data to the listeners
+for i in {1..5}; do
     echo "Fake data $i" | nc localhost $((9000 + i)) -w 1 &
 done
 
@@ -56,7 +64,7 @@ sleep 1
 echo "CTF{Wakanda_Forever}" | nc localhost 8080 -w 1
 
 # Allow time for tcpdump to capture the transmission
-sleep 2
+sleep 3
 
 # Stop tcpdump
 echo "Stopping tcpdump..."
