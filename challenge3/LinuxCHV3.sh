@@ -4,8 +4,8 @@
 echo "Setting up CTF challenge..."
 
 # Create challenge directory
-mkdir -p /tmp/ctf_challenge/level2 || { echo "Failed to create directory"; exit 1; }
-cd /tmp/ctf_challenge/level2 || { echo "Failed to access directory"; exit 1; }
+mkdir -p /tmp/ctf_challenge/level3 || { echo "Failed to create directory"; exit 1; }
+cd /tmp/ctf_challenge/level3 || { echo "Failed to access directory"; exit 1; }
 
 # Create a text file with the flag
 echo "CTF{Arc_Reactor_Design}" > flag.txt
