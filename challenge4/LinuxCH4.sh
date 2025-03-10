@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Create challenge directory
-mkdir -p /home/student/CTF_Challenges/ctf_challenge/level4 || { echo "Failed to create directory"; exit 1; }
-cd /home/student/CTF_Challenges/ctf_challenge/level4 || { echo "Failed to access directory"; exit 1; }
+mkdir -p /home/student/CTF_Challenges/level4 || { echo "Failed to create directory"; exit 1; }
+cd /home/student/CTF_Challenges/level4 || { echo "Failed to access directory"; exit 1; }
 
 # Check if tcpdump and nc are installed
 if ! command -v tcpdump > /dev/null; then
